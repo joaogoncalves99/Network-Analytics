@@ -3,49 +3,57 @@ library(igraph)
 library(ggplot2)
 library(shiny)
 
-#Page with network descriptive stats
 
-# Table with info about centralities (degree, eigenvector, etc) - only table changes with user input.
-# Histogram with degree distribution: changes according to if it is a bipartite network (one thing on each side - countries and influencers, countries and categories) or projected network (countries based on favourite categories, countries based on favourite influencers, Categories, etc)
-# If talking about influencers, histogram also changes according to minimum number of followers
-# Histogram changes according to minimum weight
-#Add option to eliminate nodes with no connections
 
-# Page with network exploration: highlight influencers or countries, etc
+
+
+
+network.plot <- function(to.delete, foll, top){
+  dt.influencers.new <- dt.influencers.new[order(-Followers)][1:top,]
+  dt.influencers.new <- dt.influencers.new[Followers >= foll,]
+  
+  categories <- dt.influencers.new[, list(name=unique(Category), type=TRUE)]
+  influencers <- dt.influencers.new[, list(name=unique(Account), type=FALSE)]
+  all.vertices <- rbind(categories, influencers)
+  g <- graph.data.frame(dt.influencers.new[, list(Category, Account)], directed=FALSE, vertices=all.vertices)
+  g.influencers <- bipartite_projection(g)$proj1
+  
+  if(to.delete == TRUE){
+    g.influencers <- induced.subgraph(g.influencers, which(round(degree(g.influencers, normalize=TRUE), 2) != 0))
+  }  
+  
+  # Generate x and y values for the sine function
+  #x <- seq(-input$x, input$x, length.out = 100)
+  #y <- sin(x)
+  
+  # Plot the sine function
+  #renderPlot(plot(x, y, type = "l", main = "Sine Function", xlab = "x", ylab = "sin(x)"))
+  plot(g.influencers,vertex.shape="circle", 
+                  vertex.color = "#FD1D91", 
+                  vertex.frame.color = "#FD1D91", 
+                  vertex.size = 20, 
+                  vertex.label.family = "sans",
+                  vertex.label.cex = 1)
+
+}
 
 
 # Define server logic ----
 server <- function(input, output) {
   
-  output$overall.network <- renderUI({
-    stud <- student.from.key(input$student.key)
-    assign <- input$assignment
-    g.sim <- graph.data.frame(dt.similarity.pairs[order(z_score)], directed=FALSE)
-    diplay <- list()
-    if (length(stud) > 0) {
-      if (length(similarity.score(stud, assign)) > 0) {
-        display <- list(h2(paste0('Hello ', student.name(stud), '!')),
-                        br())
-      } else {
-        display <- list(h2(paste0('Hello ', student.name(stud), '!')),
-                        br(),
-                        p('It seems that you did not hand in this assignment.'))
-      }} else {
-        display <- list(h2('Hey there!'),
-                        br(),
-                        p('It appears you have entered an invalid student key.'))
-      }
-    list(display,
-         list(
-           selectInput("overall.min.z.score", "Show links with at least the level of suspiciousness:",
-                       c("Above average" = 0,
-                         "Hmm..." = 1.64,
-                         "Yes" = 1.96,
-                         "Very!" = 2.57)),
-           renderPlot(overall.similarity.plot(g.sim, stud, assign,
-                                              overall.min.z.score = input$overall.min.z.score), height=600, width=600)
-         ))
+  # Define the output plot
+  output$influencer.network <- renderUI({
+    n.followers <- input$nfollowers.input * 1000000
+    top.followers <- input$top.followers.input
+
+    if(input$no.connection.input){
+      renderPlot(network.plot(TRUE, foll = n.followers, top = top.followers))
+    }else{
+      renderPlot(network.plot(FALSE, foll = n.followers, top = top.followers))
+    }
+    
   })
+  
 }
   
 

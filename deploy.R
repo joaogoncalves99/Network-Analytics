@@ -20,28 +20,5 @@ setAccountInfo(name='patriciafonseca',
                secret='zchzVnygYCzb/OuT3TeqtYdlYJ3P5Nua7L15FP0Y')
 deployApp('/Users/patriciafonseca/Desktop/Mestrado Nova SBE/Aulas/S2/T1/Network Analytics/Group assignment')
 
-# Loading CSV file
-
-# Load data from csv file 
-setwd("/Users/patriciafonseca/Desktop/Mestrado Nova SBE/Aulas/S2/T1/Network Analytics/Group assignment/Project")
-dt.influencers <- fread("instagram_global_top_1000.csv") 
-
-# Save dt.movie.actor. Next time you can simply call the load function (below)
-save(dt.influencers, file="influencers.RData")
-
-# Load previously saved dt.movie.actor. You can
-# start in this line if you have previously saved these data.
-load("influencers.RData")
-
-# Remove entries in which influencers have no category  
-dt.influencers <- dt.influencers[!(Category == "")]
-
-for (row in 1:nrow(dt.influencers)) {
-  
-  dt.influencers$Category[row] <- as.list((strsplit(as.character(dt.influencers$Category[row]), split = "\\|")))
-  
-}
-
-View(dt.influencers)
 
 
