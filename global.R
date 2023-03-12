@@ -40,6 +40,14 @@ title.from.account <- function(influencer.account) {
   dt.influencers.new[account == influencer.account, Title]
 }
 
+#Create a data frame with top 10 and top 15 accounts with the most followers
+dt.influencers.new$followerslog=dt.influencers.new$Followers/1000000
+top10 <- dt.influencers.new[order(dt.influencers.new$followerslog, decreasing = TRUE),][1:10,]
+top10 <- subset(top10, select = c("Title", "followerslog"))
+top10$followerslog <- as.numeric(top10$followerslog)
+top15 <- dt.influencers.new[order(dt.influencers.new$followerslog, decreasing = TRUE),][1:15,]
+top15<- subset(top15, select = c("Title", "followerslog"))
+
 
 #E(g)
 
