@@ -54,6 +54,29 @@ server <- function(input, output) {
     
   })
   
+  output$distPlot <- renderPlot({
+    # generate bins based on input$bins from ui.R
+    if (input$tops=="Top 15") {x    <- top15$followerslog}
+    if (input$tops=="Top 10") {x    <- top10$followerslog}
+    if (input$tops=="All") {x    <- dt.influencers.new$followerslog}
+    
+    bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    
+    # draw the histogram with the specified number of bins
+    hist(x, breaks = bins, col = 'darkgray', border = 'white', xlab=input$tops, 
+         main=paste("Histogram for Followers", input$tops))
+  })
+  
+  output$summary <- renderPrint({
+    if (input$tops=="Top 15") {x    <- top15$followerslog}
+    if (input$tops=="Top 10") {x    <- top10$followerslog}
+    if (input$tops=="All") {x    <- dt.influencers.new$followerslog}
+    
+    
+    summary(x)
+    
+  })
+  
 }
   
 
