@@ -22,7 +22,25 @@ ui <- fluidPage(
     
     tabPanel("Descriptive Statistics",
              
-            #ADD THINGS ON PAGE 1 HERE
+            sidebarLayout(
+               sidebarPanel(
+                 sliderInput("bins",
+                             "Number of bins:",
+                             min = 1,
+                             max = 100,
+                             value = 1),
+                 radioButtons("tops", "Choose the Top Influencer you want to look at", 
+                              choices=c("Top 10", "Top 15", "All"),
+                              selected="All")
+                 
+               ),
+               
+               # Show a plot of the generated distribution
+               mainPanel(
+                 plotOutput("distPlot"),
+                 verbatimTextOutput("summary")
+               )
+             )
              
     ),
     
