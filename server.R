@@ -71,12 +71,12 @@ server <- function(input, output) {
         top10country$unique
         
     })
-  
-  output$distPlot <- renderPlot({
+    
+    
+    output$distPlot <- renderPlot({
         # generate bins based on input$bins from ui.R
         if (input$tops=="Top 10") {x    <- top10$Followers}
         if (input$tops=="All") {x    <- dt.all$Followers}
-        if (input$tops=="Top 50") {x    <- top50$Followers}
         
         bins <- seq(min(x), max(x), length.out = input$bins + 1)
 
@@ -88,7 +88,6 @@ server <- function(input, output) {
     output$summary <- renderPrint({
         if (input$tops=="Top 10") {x    <- top10$Followers}
         if (input$tops=="All") {x    <- dt.all$Followers}
-        if (input$tops=="Top 50") {x    <- top50$Followers}
     
         summary(x)
         
