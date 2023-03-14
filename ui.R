@@ -55,7 +55,9 @@ ui <- fluidPage(
                                  
                         tabPanel("Summary Statistics",
                                  plotOutput("distPlot"),
-                                 verbatimTextOutput("summary")),
+                                 verbatimTextOutput("summary"),
+                                 plotOutput("engageplot"),
+                                 verbatimTextOutput("summaryenga")),
                                  
                         tabPanel("All about your Influencer"), 
                                  
