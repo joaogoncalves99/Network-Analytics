@@ -51,18 +51,15 @@ top15<- subset(top15, select = c("Title", "followerslog"))
 dt.all=read.csv("Instagram_DataSet.csv")
 top10 <- dt.all[order(dt.all$Followers, decreasing = TRUE),][1:10,]
 top10 <- subset(top10, select = c("Title", "Followers"))
-top50 <- dt.influencers.new[order(dt.all$Followers, decreasing = TRUE),][1:50,]
-top50<- subset(top50, select = c("Title", "Followers"))
-top50$Followers <- as.numeric(top50$Followers)
 top10$Followers <- as.numeric(top10$Followers)
 
-dt.general <- data.frame(Accounts = "1000", Categories = "166", Countries ="23")
-dt.influencers.combined.country <- aggregate(dt.all$Country, by=list(unique=dt.all$Country), FUN=length)
 dt.influencers.combined.country <- aggregate(dt.all$Audience.Country, by=list(unique=dt.all$Audience.Country), FUN=length)
 dt.general <- data.frame(Accounts <- "1000", Categories = "166", Countries ="31")
 dt.influencers.combined.account=aggregate(dt.all$Account, by=list(unique=dt.all$Account), FUN=length)
 top10country <- dt.all[order(dt.all$Audience.Country, decreasing = TRUE),][1:10,]
 top10country <- dt.influencers.combined.country[order(dt.influencers.combined.country$unique, decreasing = TRUE),][1:10,]
+top10engage <- dt.all[order(dt.all$Authentic.engagement, decreasing = TRUE),][1:10,]
+top10engage$Authentic.engagement <- as.numeric(top10engage$Authentic.engagement)
 
 #E(g)
 
