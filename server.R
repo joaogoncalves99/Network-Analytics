@@ -29,12 +29,12 @@ network.plot <- function(to.delete, foll, top){
   # Plot the sine function
   #renderPlot(plot(x, y, type = "l", main = "Sine Function", xlab = "x", ylab = "sin(x)"))
   plot(g.influencers,vertex.shape="circle", 
-                  vertex.color = "#FD1D91", 
-                  vertex.frame.color = "#FD1D91", 
-                  vertex.size = 20, 
-                  vertex.label.family = "sans",
-                  vertex.label.cex = 1)
-
+       vertex.color = "#FD1D91", 
+       vertex.frame.color = "#FD1D91", 
+       vertex.size = 20, 
+       vertex.label.family = "sans",
+       vertex.label.cex = 1)
+  
 }
 
 
@@ -45,7 +45,7 @@ server <- function(input, output) {
   output$influencer.network <- renderUI({
     n.followers <- input$nfollowers.input * 1000000
     top.followers <- input$top.followers.input
-
+    
     if(input$no.connection.input){
       renderPlot(network.plot(TRUE, foll = n.followers, top = top.followers))
     }else{
@@ -55,43 +55,63 @@ server <- function(input, output) {
   })
   
   output$summary_data <- renderTable({
-        dt.general
-        #falta be sure das categorias
-    })
+    dt.general
+    #falta be sure das categorias
+  })
+  
+  output$Top_10_Categories <- renderTable({
     
-    output$Top_10_Categories <- renderTable({
-        
-    })
+  })
+  
+  output$Top_10_influencers <- renderTable({
+    top10$Title
+  })
+  
+  output$Top_10_contry_engage <- renderTable({
+    top10country$unique
     
-    output$Top_10_influencers <- renderTable({
-        top10$Title
-    })
+  })
+  
+  
+  output$distPlot <- renderPlot({
+    # generate bins based on input$bins from ui.R
+    if (input$tops=="Top 10") {x    <- top10$Followers}
+    if (input$tops=="All") {x    <- dt.all$Followers}
     
-    output$Top_10_contry_engage <- renderTable({
-        top10country$unique
-        
-    })
+    bins <- seq(min(x), max(x), length.out = input$bins + 1)
     
+    # draw the histogram with the specified number of bins
+    hist(x, breaks = bins, col = 'darkgray', border = 'white', xlab=input$tops, 
+         main=paste("Histogram for Followers", input$tops))
+  })
+  
+  output$summary <- renderPrint({
+    if (input$tops=="Top 10") {x    <- top10$Followers}
+    if (input$tops=="All") {x    <- dt.all$Followers}
     
-    output$distPlot <- renderPlot({
-        # generate bins based on input$bins from ui.R
-        if (input$tops=="Top 10") {x    <- top10$Followers}
-        if (input$tops=="All") {x    <- dt.all$Followers}
-        
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white', xlab=input$tops, 
-             main=paste("Histogram for Followers", input$tops))
-    })
+    summary(x)
     
-    output$summary <- renderPrint({
-        if (input$tops=="Top 10") {x    <- top10$Followers}
-        if (input$tops=="All") {x    <- dt.all$Followers}
+  })
+  
+  output$engageplot <- renderPlot({
+    # generate bins based on input$bins from ui.R
+    if (input$tops=="Top 10") {x    <- top10engage$Authentic.engagement}
+    if (input$tops=="All") {x    <- dt.all$Authentic.engagement}
     
-        summary(x)
-        
-    })
+    bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    
+    # draw the histogram with the specified number of bins
+    hist(x, breaks = bins, col = 'darkgray', border = 'white', xlab=input$tops, 
+         main=paste("Histogram for Engagement", input$tops))
+  })
+  
+  output$summaryenga <- renderPrint({
+    if (input$tops=="Top 10") {x    <- top10engage$Authentic.engagement}
+    if (input$tops=="All") {x    <- dt.all$Authentic.engagement}
+    
+    summary(x)
+    
+  })
   
 }
   
