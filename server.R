@@ -54,28 +54,45 @@ server <- function(input, output) {
     
   })
   
-  output$distPlot <- renderPlot({
-    # generate bins based on input$bins from ui.R
-    if (input$tops=="Top 15") {x    <- top15$followerslog}
-    if (input$tops=="Top 10") {x    <- top10$followerslog}
-    if (input$tops=="All") {x    <- dt.influencers.new$followerslog}
+  output$summary_data <- renderTable({
+        dt.general
+        #falta be sure das categorias
+    })
     
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    output$Top_10_Categories <- renderTable({
+        
+    })
     
-    # draw the histogram with the specified number of bins
-    hist(x, breaks = bins, col = 'darkgray', border = 'white', xlab=input$tops, 
-         main=paste("Histogram for Followers", input$tops))
-  })
+    output$Top_10_influencers <- renderTable({
+        top10$Title
+    })
+    
+    output$Top_10_contry_engage <- renderTable({
+        top10country$unique
+        
+    })
   
-  output$summary <- renderPrint({
-    if (input$tops=="Top 15") {x    <- top15$followerslog}
-    if (input$tops=="Top 10") {x    <- top10$followerslog}
-    if (input$tops=="All") {x    <- dt.influencers.new$followerslog}
+  output$distPlot <- renderPlot({
+        # generate bins based on input$bins from ui.R
+        if (input$tops=="Top 10") {x    <- top10$Followers}
+        if (input$tops=="All") {x    <- dt.all$Followers}
+        if (input$tops=="Top 50") {x    <- top50$Followers}
+        
+        bins <- seq(min(x), max(x), length.out = input$bins + 1)
+
+        # draw the histogram with the specified number of bins
+        hist(x, breaks = bins, col = 'darkgray', border = 'white', xlab=input$tops, 
+             main=paste("Histogram for Followers", input$tops))
+    })
     
+    output$summary <- renderPrint({
+        if (input$tops=="Top 10") {x    <- top10$Followers}
+        if (input$tops=="All") {x    <- dt.all$Followers}
+        if (input$tops=="Top 50") {x    <- top50$Followers}
     
-    summary(x)
-    
-  })
+        summary(x)
+        
+    })
   
 }
   
