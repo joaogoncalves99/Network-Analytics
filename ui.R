@@ -23,22 +23,43 @@ ui <- fluidPage(
     tabPanel("Descriptive Statistics",
              
             sidebarLayout(
-               sidebarPanel(
-                 sliderInput("bins",
-                             "Number of bins:",
-                             min = 1,
-                             max = 100,
-                             value = 1),
-                 radioButtons("tops", "Choose the Top Influencer you want to look at", 
-                              choices=c("Top 10", "Top 15", "All"),
-                              selected="All")
+              sidebarPanel(
+            sliderInput("bins",
+                        "Number of bins:",
+                        min = 1,
+                        max = 100,
+                        value = 20),
+            radioButtons("tops", "Choose the Top Influencer you want to look at", 
+                         choices=c("Top 10", "Top 50", "All"),
+                         selected="Top 10"),
+            selectInput("countries",
+                        label= "Select which country you want to analyse", 
+                        choices=dt.influencers.combined.country$unique, 
+                        selected="United States of America",
+                        multiple=F)
                  
                ),
                
                # Show a plot of the generated distribution
-               mainPanel(
-                 plotOutput("distPlot"),
-                 verbatimTextOutput("summary")
+            mainPanel(
+            tabsetPanel(type = "tab",
+                        tabPanel("General Data", 
+                                 h3("Data Outlook"),
+                                 tableOutput("summary_data"),
+                                 h3("Top 10 Influencers"),
+                                 tableOutput("Top_10_influencers"),
+                                 h3("Top 10 Influencers Categories"),
+                                 tableOutput("Top_10_Categories"),
+                                 h3("Top 10 Country Engagement"),
+                                 tableOutput("Top_10_contry_engage")),
+                                 
+                        tabPanel("Summary Statistics",
+                                 plotOutput("distPlot"),
+                                 verbatimTextOutput("summary")),
+                                 
+                        tabPanel("All about your Influencer"), 
+                                 
+                        tabPanel("Get more Specific")
                )
              )
              
