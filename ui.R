@@ -20,55 +20,90 @@ ui <- fluidPage(
              
     ),
     
-    tabPanel("Descriptive Statistics",
-    
-    # Sidebar with a slider input for number of bins 
-    sidebarLayout(
-      sidebarPanel(
-        sliderInput("bins",
-                    "Number of bins:",
-                    min = 1,
-                    max = 100,
-                    value = 20),
-        radioButtons("tops", "Choose the Top Influencer you want to look at", 
-                     choices=c("Top 10", "All"),
-                     selected="Top 10"),
-        selectInput("countries",
-                    label= "Select which country you want to analyse", 
-                    choices=dt.influencers.combined.country$unique, 
-                    selected="United States of America",
-                    multiple=F)
-        
-        
-      ),
-      
-      # Show a plot of the generated distribution
-      mainPanel(
-        tabsetPanel(type = "tab",
-                    tabPanel("General Data", 
-                             h3("Data Outlook"),
-                             tableOutput("summary_data"),
-                             h3("Top 10 Influencers"),
-                             tableOutput("Top_10_influencers"),
-                             h3("Top 10 Influencers Categories"),
-                             tableOutput("Top_10_Categories"),
-                             h3("Top 10 Country Engagement"),
-                             tableOutput("Top_10_contry_engage")),
-                    
-                    tabPanel("Summary Statistics",
-                             plotOutput("distPlot"),
-                             verbatimTextOutput("summary"),
-                             plotOutput("engageplot"),
-                             verbatimTextOutput("summaryenga")),
-                    
-                    tabPanel("All about your Influencer"), 
-                    
-                    tabPanel("Get more Specific"),
-                    
-        )
-      )
-    )
-    ),
+                tabPanel("Descriptive Statistics",
+                     mainPanel(
+                         tabsetPanel(
+                             tabPanel("General Data",
+                                          h2("General Descriptive Data",style = "color: #FD1D91;"),
+                                          p("This page will provide some more general data descriptions related to the data that we analyzed"),
+                                          tags$hr(),
+                                          column(5,
+                                                 selectInput("audience.country.input",
+                                                             label= "Select which country you want to analyse", 
+                                                             choices= unique(dt.influencers.new$Audience_country), 
+                                                             selected="United States of America",
+                                                             multiple=F),
+                                                 
+                                                 tableOutput("general.statistics")
+                                                 
+                                          ),
+                                          column(7,textOutput("general.text")),
+                                 ),
+                                          
+                             tabPanel("General Statistics",
+                                      h3("General Descriptive Statistics", style = "color: #FD1D91;"),
+                                      p("This page will provide the most important statistic metrics on the collected data"),
+                                      conditionalPanel(
+                                          condition = "input.tabsetPanel.tabPanel1 == 'Statistics'",
+                                          sidebarPanel(
+                                              sliderInput("bins",
+                                                          "Number of bins:",
+                                                          min = 10,
+                                                          max = 1000,
+                                                          value = 50),
+                                              radioButtons("tops",
+                                                           label="Select the range Influencers you want to look at",
+                                                           choices=c("All", "Top 50", "Top 100"),
+                                                           selected="All"),
+                                              selectInput("statistics", "Select the statistics you want to look at", choices=c("Followers Distribution" , "Followers Distribution by Country", "Followers Distribution by Category",
+                                              "Engagement Distribution", "Engagement Distribution by Country", "Engagement Distribution by Category", "Country Engagement by Influencer Category"))
+                                          ),
+                                              
+                                    
+                                
+                                      mainPanel(
+                                              plotOutput("plot"),
+                                              verbatimTextOutput("stats")
+                                          ),
+ 
+                                          )
+                                         
+                                      ),
+                            
+                             
+                             tabPanel("All about your Influencer",
+                                      h3("All about your Influencer", style = "color: #FD1D91;")
+                                      ), 
+                             
+                             tabPanel("Get more Specific",
+                                      h3("Get more Specific", style = "color: #FD1D91;")
+                                      ),
+                             
+                             tabPanel("Data",
+                             h3("Data Set", style = "color: #FD1D91;"),
+                             conditionalPanel(
+                                 condition = "input.tabsetPanel.tabPanel1  == 'General Information'",
+                                 sidebarPanel(
+                                     selectInput("countries", "Select the country you want to analyse", choices=c("All", unique(as.character(dt.influencers$Audience.Country)))),
+                                     p("When selecting a specific country, the data set displayed on the main panel will focus on the influencers that have engagement in that  country")
+                                 ),
+                                 mainPanel(
+                                     p("Reaching the end of our statistical description, you can have a look to the data set used. As we can see, this is presented in 10 lines, divided by 100 different pages. 
+                                     Here, we made a selection of the most important variables, namely the name of the account holder that represents the name of the Influencer, the number of followers and the category to which he/she belongs. 
+                                     Also, we have the possibility to verify the country where the influencer presents a higher engagement and a column that quantifies this same engagement"),
+                                     DT::dataTableOutput('all')
+                                     
+                                     
+                                 )
+                             )
+                         )
+                         
+                         
+                         
+                         )
+                     )
+                                      
+            ),
                
              
              
