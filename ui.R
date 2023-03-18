@@ -38,10 +38,35 @@ ui <- fluidPage(
     tabsetPanel(
       id = "mainTabset",
       tabPanel("Home",
+               
+          fluidRow(
+          column(width = 10,   
     
-       h1("Hi!"),
-       h2("Welcome to our Shiny app! We hope you enjoy it as much as we enjoyed creating it."),
-       h3("The dataset contains information on the 1,000 most popular influencers,  including their number of followers, engagements")
+          h3("Welcome to our Shiny App!"),
+          
+          p("This project is focused on exploring and analyzing a network of 1000 Instagram influencers. The dataset includes valuable information such as the influencers' audience country of origin, number of followers, and category of their profile.
+          Our goal with this project is to identify the most influential individuals in this network and gain insights into their connections and impact."),
+          
+          p("In the \"Descriptive Statistics\" tab, you can view aggregated data about the influencers and their followers. This includes general statistics about the number of followers and their country of origin, as well as more specific data such as the most popular categories of influencer profiles."),
+          
+          p("In the \"Network Exploration\" tab, you can view various descriptive statistics regarding the network, such as the number of top influencers, as well as visual representations of the connections between influencers."),
+          p("Finally, in the \"Link Prediction\" tab, we have created a predition tool that predicts which influencers are similar to each other and plotted the connections. We also calculated Jaccard Index to helped us to see the predictions better."),
+          
+          p("Overall, our Top Influencers project provides a comprehensive analysis of the network of 1000 influencers and their network. Maybe in the future, this tool will help you make informed decisions about your influencer marketing strategy and improve your overall marketing efforts."),
+          
+          ),
+          
+          ),
+              dataTableOutput("my_table"),
+          
+          
+          
+          column(width = 3, 
+                 tags$img(src = "kand.png", height = 200)
+          ),
+          
+
+          
        
       ),
       

@@ -5,7 +5,15 @@ library(shiny)
 
 # Define server
 server <- function(input, output) {
-
+  
+  
+  my_data <- data.frame("Student Name" = c("Ines", "Joao", "Julia", "Maria", "Patricia"), 
+                        "Student ID" = c("54045", "", "53781", "54350", "53004"))
+  output$my_table <- renderDataTable({
+    datatable(my_data, rownames = FALSE, options = list(paging = FALSE, searching = FALSE, ordering = FALSE))
+  
+    })
+  
   output$general.statistics <- renderTable({
   
     
