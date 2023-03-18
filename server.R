@@ -54,64 +54,255 @@ server <- function(input, output) {
     
   })
   
-  output$summary_data <- renderTable({
-    dt.general
-    #falta be sure das categorias
-  })
-  
-  output$Top_10_Categories <- renderTable({
+  output$all <- DT::renderDataTable({
+        DT::datatable({
+            data <- dt.influencers
+            if (input$countries != "All") {
+                data <- data[data$Audience.Country == input$countries, ]
+            }
+            data
+        })
+    })
     
-  })
-  
-  output$Top_10_influencers <- renderTable({
-    top10$Title
-  })
-  
-  output$Top_10_contry_engage <- renderTable({
-    top10country$unique
-    
-  })
-  
-  
-  output$distPlot <- renderPlot({
-    # generate bins based on input$bins from ui.R
-    if (input$tops=="Top 10") {x    <- top10$Followers}
-    if (input$tops=="All") {x    <- dt.all$Followers}
-    
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
-    
-    # draw the histogram with the specified number of bins
-    hist(x, breaks = bins, col = 'darkgray', border = 'white', xlab=input$tops, 
-         main=paste("Histogram for Followers", input$tops))
-  })
-  
-  output$summary <- renderPrint({
-    if (input$tops=="Top 10") {x    <- top10$Followers}
-    if (input$tops=="All") {x    <- dt.all$Followers}
-    
-    summary(x)
-    
-  })
-  
-  output$engageplot <- renderPlot({
-    # generate bins based on input$bins from ui.R
-    if (input$tops=="Top 10") {x    <- top10engage$Authentic.engagement}
-    if (input$tops=="All") {x    <- dt.all$Authentic.engagement}
-    
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
-    
-    # draw the histogram with the specified number of bins
-    hist(x, breaks = bins, col = 'darkgray', border = 'white', xlab=input$tops, 
-         main=paste("Histogram for Engagement", input$tops))
-  })
-  
-  output$summaryenga <- renderPrint({
-    if (input$tops=="Top 10") {x    <- top10engage$Authentic.engagement}
-    if (input$tops=="All") {x    <- dt.all$Authentic.engagement}
-    
-    summary(x)
-    
-  })
+    output$plot <- renderPlot({
+        if (input$statistics == "Followers Distribution" & input$tops =="Top 50" ) {
+            g1 <- ggplot(dt.influencers.top50, aes(x =dt.influencers.top50$Followers)) + 
+                geom_histogram(bins=input$bins)+
+                xlab("Number of Followers (M)")+ ylab("Frequency")+
+                ggtitle(input$statistics)+
+                theme(plot.title = element_text(size = 14, face = "bold"),
+                      axis.text = element_text(size = 12),
+                      axis.title = element_text(size = 12, face = "bold"))
+            plot(g1)
+        }
+   
+        if (input$statistics == "Followers Distribution" & input$tops =="Top 100" ) {
+            g1 <- ggplot(dt.influencers.top100, aes(x =dt.influencers.top100$Followers)) + 
+                geom_histogram(bins=input$bins)+
+                xlab("Number of Followers (M)")+ ylab("Frequency")+
+                ggtitle(input$statistics)+
+                theme(plot.title = element_text(size = 14, face = "bold"),
+                      axis.text = element_text(size = 12),
+                      axis.title = element_text(size = 12, face = "bold"))
+            plot(g1)
+        }
+        
+        if (input$statistics == "Followers Distribution" & input$tops =="All" ) {
+            g1 <- ggplot(dt.influencers, aes(x =dt.influencers$Followers)) + 
+                geom_histogram(bins=input$bins)+
+                xlab("Number of Followers (M)")+ ylab("Frequency")+
+                ggtitle(input$statistics)+
+                theme(plot.title = element_text(size = 14, face = "bold"),
+                      axis.text = element_text(size = 12),
+                      axis.title = element_text(size = 12, face = "bold"))
+            plot(g1)
+        }
+        
+        if (input$statistics == "Followers Distribution by Country" & input$tops == "Top 50") {
+            g1 <- ggplot(dt.influencers.top50, aes(x = dt.influencers.top50$Followers, y=dt.influencers.top50$Audience.Country )) + 
+                geom_point() +
+                xlab("Influencers") + ylab("Audience Country") +
+                ggtitle(input$statistics) +
+                theme(plot.title = element_text(size = 14, face = "bold"),
+                      axis.text = element_text(size = 12),
+                      axis.title = element_text(size = 12, face = "bold"))
+            plot(g1)
+            
+        }
+        
+        if (input$statistics == "Followers Distribution by Country" & input$tops == "Top 100") {
+            g1 <- ggplot(dt.influencers.top100, aes(x = dt.influencers.top100$Followers, y=dt.influencers.top100$Audience.Country )) + 
+                geom_point()+
+                xlab("Influencers") + ylab("Audience Country") +
+                ggtitle(input$statistics) +
+                theme(plot.title = element_text(size = 14, face = "bold"),
+                      axis.text = element_text(size = 12),
+                      axis.title = element_text(size = 12, face = "bold"))
+            plot(g1)
+            
+        }
+        
+        if (input$statistics == "Followers Distribution by Country" & input$tops == "All") {
+            g1 <- ggplot(dt.influencers, aes(x = dt.influencers$Followers, y=dt.influencers$Audience.Country )) + 
+                geom_point()+
+                xlab("Influencers") + ylab("Audience Country") +
+                ggtitle(input$statistics) +
+                theme(plot.title = element_text(size = 14, face = "bold"),
+                      axis.text = element_text(size = 12),
+                      axis.title = element_text(size = 12, face = "bold"))
+            plot(g1)
+            
+        }
+        
+        if (input$statistics == "Followers Distribution by Category" & input$tops == "Top 50") {
+            g1 <- ggplot(dt.influencers.top50, aes(x = dt.influencers.top50$Followers, y=dt.influencers.top50$Category )) + 
+                geom_point()+
+                xlab("Influencers") + ylab("Category") +
+                ggtitle(input$statistics) +
+                theme(plot.title = element_text(size = 14, face = "bold"),
+                      axis.text = element_text(size = 12),
+                      axis.title = element_text(size = 12, face = "bold"))
+            plot(g1)
+        }
+        
+        if (input$statistics == "Followers Distribution by Category" & input$tops == "Top 100") {
+            g1 <- ggplot(dt.influencers.top100, aes(x = dt.influencers.top100$Followers, y=dt.influencers.top100$Category )) + 
+                geom_point()+
+                xlab("Influencers") + ylab("Category") +
+                ggtitle(input$statistics) +
+                theme(plot.title = element_text(size = 14, face = "bold"),
+                      axis.text = element_text(size = 12),
+                      axis.title = element_text(size = 12, face = "bold"))
+            plot(g1)
+        }
+        
+        if (input$statistics == "Followers Distribution by Category" & input$tops == "All") {
+            g1 <- ggplot(dt.influencers, aes(x = dt.influencers$Followers, y=dt.influencers$Category )) + 
+                geom_point()+
+                xlab("Influencers") + ylab("Category") +
+                ggtitle(input$statistics) +
+                theme(plot.title = element_text(size = 14, face = "bold"),
+                      axis.text = element_text(size = 12),
+                      axis.title = element_text(size = 12, face = "bold"))
+            plot(g1)
+        }
+        
+        if (input$statistics == "Engagement Distribution" & input$tops == "Top 50") {
+            g1 <- ggplot(dt.influencers.top50, aes(x = dt.influencers.top50$Authentic.Engagement)) + 
+                geom_histogram(bins=input$bins)+
+                xlab("Engagement (M)")+ ylab("Frequency")+
+                ggtitle(input$statistics)+
+                theme(plot.title = element_text(size = 14, face = "bold"),
+                      axis.text = element_text(size = 12),
+                      axis.title = element_text(size = 12, face = "bold"))
+            plot(g1)
+        }
+        
+        if (input$statistics == "Engagement Distribution" & input$tops == "Top 100") {
+            g1 <- ggplot(dt.influencers.top100, aes(x = dt.influencers.top100$Authentic.Engagement)) + 
+                geom_histogram(bins=input$bins)+
+                xlab("Engagement (M)")+ ylab("Frequency")+
+                ggtitle(input$statistics)+
+                theme(plot.title = element_text(size = 14, face = "bold"),
+                      axis.text = element_text(size = 12),
+                      axis.title = element_text(size = 12, face = "bold"))
+            plot(g1)
+        }
+        
+        if (input$statistics == "Engagement Distribution" & input$tops == "All") {
+            g1 <- ggplot(dt.influencers, aes(x = dt.influencers$Authentic.Engagement)) + 
+                geom_histogram(bins=input$bins)+
+                xlab("Engagement (M)")+ ylab("Frequency")+
+                ggtitle(input$statistics)+
+                theme(plot.title = element_text(size = 14, face = "bold"),
+                      axis.text = element_text(size = 12),
+                      axis.title = element_text(size = 12, face = "bold"))
+            plot(g1)
+        }
+        
+        if (input$statistics == "Engagement Distribution by Country" & input$tops == "Top 50") {
+            g1 <- ggplot(dt.influencers.top50, aes(x = dt.influencers.top50$Authentic.Engagement, y=dt.influencers.top50$Audience.Country)) + 
+                geom_point()+
+                xlab("Engagement") + ylab("Coutry") +
+                ggtitle(input$statistics) +
+                theme(plot.title = element_text(size = 14, face = "bold"),
+                      axis.text = element_text(size = 12),
+                      axis.title = element_text(size = 12, face = "bold"))
+            plot(g1)
+        }
+        
+        if (input$statistics == "Engagement Distribution by Country" & input$tops == "Top 100") {
+            g1 <- ggplot(dt.influencers.top100, aes(x = dt.influencers.top100$Authentic.Engagement, y=dt.influencers.top100$Audience.Country)) + 
+                geom_point()+
+                xlab("Engagement") + ylab("Country") +
+                ggtitle(input$statistics) +
+                theme(plot.title = element_text(size = 14, face = "bold"),
+                      axis.text = element_text(size = 12),
+                      axis.title = element_text(size = 12, face = "bold"))
+            plot(g1)
+        }
+        
+        if (input$statistics == "Engagement Distribution by Country" & input$tops == "All") {
+            g1 <- ggplot(dt.influencers, aes(x = dt.influencers$Authentic.Engagement, y=dt.influencers$Audience.Country)) + 
+                geom_point()+
+                xlab("Engagement") + ylab("Country") +
+                ggtitle(input$statistics) +
+                theme(plot.title = element_text(size = 14, face = "bold"),
+                      axis.text = element_text(size = 12),
+                      axis.title = element_text(size = 12, face = "bold"))
+            plot(g1)
+        }
+        
+        if (input$statistics == "Engagement Distribution by Category" & input$tops == "Top 50") {
+            g1 <- ggplot(dt.influencers.top50, aes(x = dt.influencers.top50$Authentic.Engagement, y=dt.influencers.top50$Category)) + 
+                geom_point()+
+                xlab("Engagement") + ylab("Category") +
+                ggtitle(input$statistics) +
+                theme(plot.title = element_text(size = 14, face = "bold"),
+                      axis.text = element_text(size = 12),
+                      axis.title = element_text(size = 12, face = "bold"))
+            plot(g1)
+        }
+        
+        if (input$statistics == "Engagement Distribution by Category" & input$tops == "Top 100") {
+            g1 <- ggplot(dt.influencers.top100, aes(x = dt.influencers.top100$Authentic.Engagement, y=dt.influencers.top100$Category)) + 
+                geom_point()+
+                xlab("Engagement") + ylab("Category") +
+                ggtitle(input$statistics) +
+                theme(plot.title = element_text(size = 14, face = "bold"),
+                      axis.text = element_text(size = 12),
+                      axis.title = element_text(size = 12, face = "bold"))
+            plot(g1)
+        }
+        
+        if (input$statistics == "Engagement Distribution by Category" & input$tops == "All") {
+            g1 <- ggplot(dt.influencers, aes(x = dt.influencers$Authentic.Engagement, y=dt.influencers$Category)) + 
+                geom_point()+
+                xlab("Engagement") + ylab("Category") +
+                ggtitle(input$statistics) +
+                theme(plot.title = element_text(size = 14, face = "bold"),
+                      axis.text = element_text(size = 12),
+                      axis.title = element_text(size = 12, face = "bold"))
+            plot(g1)
+        }
+        
+        if (input$statistics == "Country Engagement by Influencer Category" & input$tops == "Top 50") {
+            g1 <- ggplot(dt.influencers.top50, aes(x = dt.influencers.top50$Audience.Country, y=dt.influencers.top50$Category)) + 
+                geom_point()+
+                xlab("Country Engagement") + ylab("Category") +
+                ggtitle(input$statistics) +
+                theme(plot.title = element_text(size = 14, face = "bold"),
+                      axis.text = element_text(size = 12),
+                      axis.title = element_text(size = 12, face = "bold"))
+            plot(g1)
+        }
+        
+        if (input$statistics == "Country Engagement by Influencer Category" & input$tops == "Top 100") {
+            g1 <- ggplot(dt.influencers.top100, aes(x = dt.influencers.top100$Audience.Country, y=dt.influencers.top100$Category)) + 
+                geom_point()+
+                xlab("Country Engagement") + ylab("Category") +
+                ggtitle(input$statistics) +
+                theme(plot.title = element_text(size = 14, face = "bold"),
+                      axis.text = element_text(size = 12),
+                      axis.title = element_text(size = 12, face = "bold"))
+            plot(g1)
+        }
+        
+        if (input$statistics == "Country Engagement by Influencer Category" & input$tops == "All") {
+            g1 <- ggplot(dt.influencers, aes(x = dt.influencers$Audience.Country, y=dt.influencers$Category)) + 
+                geom_point()+
+                xlab("Country Engagement") + ylab("Category") +
+                ggtitle(input$statistics) +
+                theme(plot.title = element_text(size = 14, face = "bold"),
+                      axis.text = element_text(size = 12),
+                      axis.title = element_text(size = 12, face = "bold"))
+            plot(g1)
+        }
+    })
+            
+    output$stats <- renderPrint({
+        p("someting that is missing")
+    })
   
 }
   
