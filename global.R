@@ -24,3 +24,4 @@ dt.influencers.new <- data.table(Account = rep(dt.influencers$Account, sapply(dt
 
 dt.influencers <- dt.influencers %>% 
   mutate(rank = ntile(Followers, n = 5)) 
+

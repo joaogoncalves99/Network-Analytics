@@ -95,13 +95,13 @@ server <- function(input, output) {
     
     if (two.choices == "Category"){ #WRITE HERE THE GRAPH FOR CATEGORY
     hist(degree(graph), breaks = bins, col = "#FD1D91", border = "white",
-         xlab = "eoifjiwe",
-         ylab = "ewiuhfwoehfwe",
+         xlab = "Degree Centrality",
+         ylab = "Number of Influencers",
          main = "Histogram Category")
     }else{ #WRITE HERE THE GRAPH FOR COUNTRY
       hist(degree(graph), breaks = bins, col = "#FD1D91", border = "white",
-           xlab = "eoifjiwe",
-           ylab = "ewiuhfwoehfwe",
+           xlab = "Degree Centrality",
+           ylab = "Number of Influencers",
            main = "Histogram Country")
     }
   })
@@ -181,6 +181,66 @@ server <- function(input, output) {
       visOptions(highlightNearest = TRUE) %>%
       visEdges(color = list(color = "black", highlight = "#00FFFF")) %>%
       visNodes(color = list(border = "#FD1D91", background = "#FD1D91", highlight = list(background = "#FFFF00")))
+    
+  })
+  
+  output$prediction.network <- renderVisNetwork({
+    top.followers <- input$top.influencers
+    
+    graph <- network.graph(TRUE, foll = 0, top = top.followers,TRUE)
+    
+    my.layout <- layout_nicely(graph)
+    m.predicted.edges <- 
+      as.matrix(cocitation(graph) * (1-get.adjacency(graph)))
+    g.predicted.edges <- 
+      graph_from_adjacency_matrix(m.predicted.edges, 
+                                  mode = "undirected", 
+                                  weighted = TRUE)
+    E(g.predicted.edges)$width <- 
+      E(g.predicted.edges)$weight * 2
+    
+    visGDF <- toVisNetworkData(g.predicted.edges)
+    
+    visNetwork(visGDF$nodes, visGDF$edges) %>%
+      visOptions(highlightNearest = TRUE) %>%
+      visEdges(color = list(color = "black", highlight = "#00FFFF")) %>%
+      visNodes(color = list(border = "#FD1D91", background = "#FD1D91", highlight = list(background = "#FFFF00")))
+  })
+  
+  output$jaccardi.index <- renderDataTable({
+    top.followers <- input$top.influencers.jaccard
+    min <- input$interval.jaccard[1]
+    max <- input$interval.jaccard[2]
+    
+    dt.aux <- dt.influencers.new[Followers >= 0, .N, by=list(Account, Followers)][order(-Followers)][1:top.followers, Account]
+    dt.influencers.new <- dt.influencers.new[Account %in% dt.aux,]
+    
+    cat.count <- dt.influencers.new[, list(name=unique(Category), type=TRUE)]
+    influencers <- dt.influencers.new[, list(name=unique(Account), type=FALSE)]
+    all.vertices <- rbind(cat.count, influencers)
+    g <- graph.data.frame(dt.influencers.new[, list(Category, Account)], directed=FALSE, vertices=all.vertices)
+    
+    g.proj <- bipartite_projection(g)$proj1
+    
+    aux.jaccard <- unique(dt.influencers.new$Account)
+    dt.aux.jaccard <- data.frame(Account = aux.jaccard)
+    
+    combs <- combn(dt.aux.jaccard$Account, 2)
+    pairs <- t(combs)
+    pairs <- data.table(pairs)
+    pairs$similarity <- NA
+    
+    for (i in seq_along(pairs$V1)) {
+      # compute the similarity between the pair of values
+      sim <- similarity(g.proj, v = c(pairs$V1[i], pairs$V2[i]), method = "jaccard")[1, 2]
+      # store the similarity in the column
+      pairs$similarity[i] <- sim
+    }
+    
+    pairs <- rename(pairs, Influencer_1 = V1)
+    pairs <- rename(pairs, Influencer_2 = V2)
+    
+    pairs[pairs$similarity >= min & pairs$similarity <= max ,]
     
   })
 }

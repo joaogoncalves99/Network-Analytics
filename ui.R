@@ -98,7 +98,7 @@ ui <- fluidPage(
        sidebarPanel(
          h5("Here you can change the parameters of the network you would like to see."),
          
-         textInput("top.followers.input", "Top Followers to Display:",value = 10),
+         textInput("top.followers.input", "Top Influencers to Display (based on followers):",value = 10),
          
          sliderInput("nfollowers.input", "Minimum Number of Followers (millions):",
                      min = 0, max = 470, value = 0, step = 25),
@@ -131,7 +131,7 @@ ui <- fluidPage(
               fluidRow(
                 column(9,plotOutput("histogram.statistics")),
                 column(3,sliderInput("bins.input", "Number of Bins",
-                       min = 0, max = 50, value = 10, step = 5))),
+                       min = 0, max = 10, value = 5, step = 5))),
                     
               h3("Centrality measures for each influencer"),
                     
@@ -171,6 +171,40 @@ ui <- fluidPage(
               tags$hr(),
               visNetworkOutput("country.network",width = "1000px", height = "800px")
             )
+          )
+        )
+      ),
+      tabPanel("Link Prediction",
+        mainPanel(
+          tabsetPanel(
+            tabPanel("Common Neighbors",
+               h2("Common Neighbors",style = "margin-top: 10px; 
+          background: -webkit-linear-gradient(#8a3ab9, #fd1d1d);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          font-weight: bold;
+          font-size: 28px;
+          letter-spacing: -1px;"),
+               p("adicionar"),
+               textInput("top.influencers", "Top Influencers to Display (based on followers):",value = 10),
+               tags$hr(),
+               visNetworkOutput("prediction.network",width = "1000px", height = "800px")
+            ),
+            tabPanel("Jaccard Index",
+                     h2("Jaccard Index",style = "margin-top: 10px; 
+                      background: -webkit-linear-gradient(#8a3ab9, #fd1d1d);
+                      -webkit-background-clip: text;
+                      -webkit-text-fill-color: transparent;
+                      font-weight: bold;
+                      font-size: 28px;
+                      letter-spacing: -1px;"),
+                     p("adicionar"),
+                     textInput("top.influencers.jaccard", "Top Influencers to Display (based on followers):",value = 10),
+                     sliderInput("interval.jaccard", label = "Select an Interval:",
+                                 min = 0, max = 1, value = c(0, 0.5), step = 0.1),
+                     tags$hr(),
+                     dataTableOutput("jaccardi.index")  
+            ),
           )
         )
       )
