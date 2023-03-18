@@ -110,15 +110,15 @@ ui <- fluidPage(
          tabsetPanel(
            id = "dataTabset",
             tabPanel("Overall Statistics",
-              h2("ADD A TITLE",style = "margin-top: 10px; 
+              h2("Summary Statistics and Centrality Analysis",style = "margin-top: 10px; 
                 background: -webkit-linear-gradient(#8a3ab9, #fd1d1d);
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
                 font-weight: bold;
                 font-size: 28px;
                 letter-spacing: -1px;"),
-              p("WRITE A SHORT DESCRIPTION"),
-              selectInput("two.choices", "eruysfghuoesfes",
+              p("Here we can find both some basic descriptive statistics on the network and information on the centrality measures."),
+                selectInput("two.choices", "Network of influencers based on:",
                           choices = c("Category", "Country"),
                           selected = "Category"),
               tags$hr(),
@@ -126,29 +126,29 @@ ui <- fluidPage(
               fluidRow(
                 tableOutput("network.statistics")),
                     
-              h3("Chouriças"),
+              h3("Degree distribution of the influencers' network"),
                     
               fluidRow(
                 column(9,plotOutput("histogram.statistics")),
                 column(3,sliderInput("bins.input", "Number of Bins",
                        min = 0, max = 50, value = 10, step = 5))),
                     
-              h3("Another Chouriças"),
+              h3("Centrality measures for each influencer"),
                     
               fluidRow(
                 dataTableOutput("network.metrics")
               )
             ),
             tabPanel("Influencers Based on Category",
-              h2("ADD A TITLE",style = "margin-top: 10px; 
+              h2("Network of Influencers, based on Category",style = "margin-top: 10px; 
                 background: -webkit-linear-gradient(#8a3ab9, #fd1d1d);
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
                 font-weight: bold;
                 font-size: 28px;
                 letter-spacing: -1px;"),
-              p("WRITE A SHORT DESCRIPTION"),
-              selectInput("category.choices", "Choose one or more options:",
+              p("Here we find an interactive network model that highlights which influencers are connected, based on the category of their content. The user can interact with the network model by clicking in each node in order to get a better insight on the existing connections of each influencer."),
+              selectInput("category.choices", "Choose one or more categories:",
                            choices = c(unique(dt.influencers.new$Category)),
                            selected = "Fashion",
                            multiple = T),
@@ -156,15 +156,15 @@ ui <- fluidPage(
               visNetworkOutput("category.network",height = "800px", width = "1000px")
             ),
             tabPanel("Influencers Based on Audience Country",
-              h2("ADD A TITLE",style = "margin-top: 10px; 
+              h2("Network of Influencers, based on Audience Country",style = "margin-top: 10px; 
                 background: -webkit-linear-gradient(#8a3ab9, #fd1d1d);
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
                 font-weight: bold;
                 font-size: 28px;
                 letter-spacing: -1px;"),
-              p("WRITE A SHORT DESCRIPTION"),
-              selectInput("countries.choices", "Choose one or more options:",
+              p("Here we find an interactive network model that highlights which influencers are connected, based on their audience country. The user can interact with the network model by clicking each node in order to get a better insight on the existing connections of each influencer."),
+              selectInput("countries.choices", "Choose one or more countries:",
                           choices = c(unique(dt.influencers.new$Audience_country)),
                           selected = "India",
                           multiple = T),
