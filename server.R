@@ -301,7 +301,133 @@ server <- function(input, output) {
     })
             
     output$stats <- renderPrint({
-        p("someting that is missing")
+        output$stats <- renderPrint({
+        
+        if (input$statistics == "Followers Distribution" & input$tops =="Top 50" ) {
+            data_1 <- dt.influencers.top50
+            data_1_sum <- summary(data_1)
+            print(data_1_sum)
+        }
+        
+        if (input$statistics == "Followers Distribution" & input$tops =="Top 100" ) {
+            data_1 <- dt.influencers.top100
+            data_1_sum <- summary(data_1)
+            print(data_1_sum)
+        }
+        
+        if (input$statistics == "Followers Distribution" & input$tops =="All" ) {
+            data_1 <- dt.influencers
+            data_1_sum <- summary(data_1)
+            print(data_1_sum)
+        }
+        
+        if (input$statistics == "Followers Distribution by Country" & input$tops == "Top 50") {
+            data_1 <- dt.influencers.top50
+            data_1_sum <- summary(data_1)
+            print(data_1_sum)
+        }
+        
+        if (input$statistics == "Followers Distribution by Country" & input$tops == "Top 100") {
+            data_1 <- dt.influencers.top100
+            data_1_sum <- summary(data_1)
+            print(data_1_sum)
+        }
+        
+        if (input$statistics == "Followers Distribution by Country" & input$tops == "All") {
+            data_1 <- dt.influencers
+            data_1_sum <- summary(data_1)
+            print(data_1_sum)
+        }
+        
+        if (input$statistics == "Followers Distribution by Category" & input$tops == "Top 50") {
+            data_1 <- dt.influencers.top50
+            data_1_sum <- summary(data_1)
+            print(data_1_sum)
+        }
+        
+        if (input$statistics == "Followers Distribution by Category" & input$tops == "Top 100") {
+            data_1 <- dt.influencers.top100
+            data_1_sum <- summary(data_1)
+            print(data_1_sum)
+        }
+        
+        if (input$statistics == "Followers Distribution by Category" & input$tops == "All") {
+            data_1 <- dt.influencers
+            data_1_sum <- summary(data_1)
+            print(data_1_sum)
+        }
+        
+        if (input$statistics == "Engagement Distribution" & input$tops == "Top 50") {
+            data_1 <- dt.influencers.top50
+            data_1_sum <- summary(data_1)
+            print(data_1_sum)
+        }
+        
+        if (input$statistics == "Engagement Distribution" & input$tops == "Top 100") {
+            data_1 <- dt.influencers.top100
+            data_1_sum <- summary(data_1)
+            print(data_1_sum)
+        }
+        
+        if (input$statistics == "Engagement Distribution" & input$tops == "All") {
+            data_1 <- dt.influencers
+            data_1_sum <- summary(data_1)
+            print(data_1_sum)
+        }
+        
+        if (input$statistics == "Engagement Distribution by Country" & input$tops == "Top 50") {
+            data_1 <- dt.influencers.top50
+            data_1_sum <- summary(data_1)
+            print(data_1_sum)
+        }
+        
+        if (input$statistics == "Engagement Distribution by Country" & input$tops == "Top 100") {
+            data_1 <- dt.influencers.top100
+            data_1_sum <- summary(data_1)
+            print(data_1_sum)
+        }
+        
+        if (input$statistics == "Engagement Distribution by Country" & input$tops == "All") {
+            data_1 <- dt.influencers
+            data_1_sum <- summary(data_1)
+            print(data_1_sum)
+        }
+        
+        if (input$statistics == "Engagement Distribution by Category" & input$tops == "Top 50") {
+            data_1 <- dt.influencers.top50
+            data_1_sum <- summary(data_1)
+            print(data_1_sum)
+        }
+        
+        if (input$statistics == "Engagement Distribution by Category" & input$tops == "Top 100") {
+            data_1 <- dt.influencers.top100
+            data_1_sum <- summary(data_1)
+            print(data_1_sum)
+        }
+        
+        if (input$statistics == "Engagement Distribution by Category" & input$tops == "All") {
+            data_1 <- dt.influencers
+            data_1_sum <- summary(data_1)
+            print(data_1_sum)
+        }
+        
+        if (input$statistics == "Country Engagement by Influencer Category" & input$tops == "Top 50") {
+            data_1 <- dt.influencers.top50
+            data_1_sum <- summary(data_1)
+            print(data_1_sum)
+        }
+        
+        if (input$statistics == "Country Engagement by Influencer Category" & input$tops == "Top 100") {
+            data_1 <- dt.influencers.top100
+            data_1_sum <- summary(data_1)
+            print(data_1_sum)
+        }
+        
+        if (input$statistics == "Country Engagement by Influencer Category" & input$tops == "All") {
+            data_1 <- dt.influencers
+            data_1_sum <- summary(data_1)
+            print(data_1_sum)
+        }
     })
   
 }
