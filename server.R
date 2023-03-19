@@ -2,6 +2,9 @@ library(data.table)
 library(igraph)
 library(ggplot2)
 library(shiny)
+library(RColorBrewer)
+library(wordcloud2)
+
 
 # Define server
 server <- function(input, output) {
@@ -13,6 +16,43 @@ server <- function(input, output) {
     colnames(my_data) <- NULL
     rownames(my_data) <- NULL
     my_data
+    
+  })
+  
+  output$general.statistics <- renderTable({
+  
+    
+    #Creating a table with the number of followers, the top influencer, the authentic engagement and the engagement average for each country in the dataset 
+    dt.aux <- subset(dt.influencers, rank == input$rank )
+    
+    number.followers.country <- sum(dt.aux$Followers)
+    
+    number.followers.authentic.eng <- sum(dt.aux$`Authentic engagement`)
+    
+    number.followers.average.eng <- sum(dt.aux$`Engagement avg`)
+      
+    dt.descriptive.statistics <- data.table(Statistic = character(),
+                                            Value = numeric())
+
+    dt.descriptive.statistics <- rbind(dt.descriptive.statistics,
+                                       list("Number of Top Influencers", nrow(dt.aux)),
+                                       list("Number of Followers", number.followers.country),
+                                       list("Authentic Engagement", number.followers.authentic.eng),
+                                       list("Average Engagement", number.followers.average.eng)
+                                  )
+    dt.descriptive.statistics
+   
+  })
+  
+  output$general.text <- renderText({
+    
+    "In this tab we have created a popularity rank for all the influencers in the dataset, grouping them in 5 
+    different categories from 1 to 5, being 5 the highest level of popularity. Besides the number of top 
+    influencers belonging to rank 5, here we can see the number of followers, the authentic engagement (number 
+    of likes and comments that, on average, come from 'real people' and influencers per post) and the average 
+    engagement (total number of likes and comments of an account divided by its number of followers) of each 
+    rank. You can explore this descriptive statistics 
+    using the drop-down menu on the side."
     
   })
   
@@ -48,7 +88,7 @@ server <- function(input, output) {
     if (input$statistics == "Followers Distribution by Country") {
       g1 <- ggplot(my_subset, aes(x = my_subset$Followers, y=my_subset$`Audience Country`,color ="#FD1D91" )) + 
         geom_point()+
-        xlab("Influencers") + ylab("Audience Country") +
+        xlab("Followers") + ylab("Audience Country") +
         ggtitle(input$statistics) +
         theme(plot.title = element_text(size = 14, face = "bold"),
               axis.text = element_text(size = 12),
@@ -62,7 +102,7 @@ server <- function(input, output) {
     if (input$statistics == "Followers Distribution by Category") {
       g1 <- ggplot(my_subset, aes(x = my_subset$Followers, y=my_subset$Category, color ="#FD1D91" )) + 
         geom_point()+
-        xlab("Influencers") + ylab("Category") +
+        xlab("Followers") + ylab("Category") +
         ggtitle(input$statistics) +
         theme(plot.title = element_text(size = 14, face = "bold"),
               axis.text = element_text(size = 12),
@@ -73,7 +113,7 @@ server <- function(input, output) {
     if (input$statistics == "Engagement Distribution") {
       g1 <- ggplot(my_subset, aes(x = my_subset$`Authentic engagement`,fill ="#FD1D91")) + 
         geom_histogram(bins=input$bins)+
-        xlab("Engagement (M)")+ ylab("Frequency")+
+        xlab("Authentic Engagement (M)")+ ylab("Frequency")+
         ggtitle(input$statistics)+
         theme(plot.title = element_text(size = 14, face = "bold"),
               axis.text = element_text(size = 12),
@@ -86,7 +126,7 @@ server <- function(input, output) {
     if (input$statistics == "Engagement Distribution by Country") {
       g1 <- ggplot(my_subset, aes(x = my_subset$`Authentic engagement`, y=my_subset$`Audience Country`,color ="#FD1D91")) + 
         geom_point()+
-        xlab("Engagement") + ylab("Coutry") +
+        xlab("Authentic Engagement") + ylab("Country") +
         ggtitle(input$statistics) +
         theme(plot.title = element_text(size = 14, face = "bold"),
               axis.text = element_text(size = 12),
@@ -97,58 +137,64 @@ server <- function(input, output) {
     if (input$statistics == "Engagement Distribution by Category") {
       g1 <- ggplot(my_subset, aes(x = my_subset$`Authentic engagement`, y=my_subset$Category,color ="#FD1D91")) + 
         geom_point()+
-        xlab("Engagement") + ylab("Category") +
+        xlab("Authentic Engagement") + ylab("Category") +
         ggtitle(input$statistics) +
         theme(plot.title = element_text(size = 14, face = "bold"),
               axis.text = element_text(size = 12),
               axis.title = element_text(size = 12, face = "bold"))
       plot(g1)
     }
-    
-    
-    if (input$statistics == "Country Engagement by Influencer Category") {
-      g1 <- ggplot(my_subset, aes(x = my_subset$`Audience Country`, y=my_subset$Category,color ="#FD1D91")) + 
-        geom_point()+
-        xlab("Country Engagement") + ylab("Category") +
-        ggtitle(input$statistics) +
-        theme(plot.title = element_text(size = 14, face = "bold"),
-              axis.text = element_text(size = 12),
-              axis.title = element_text(size = 12, face = "bold"))
-      plot(g1)
-    }
-    
-  })  
-  
-
-  output$general.statistics <- renderTable({
-  
-    
-    #Creating a table with the number of followers, the top influencer, the authentic engagement and the engagement average for each country in the dataset 
-    dt.aux <- subset(dt.influencers, rank == input$rank )
-    
-    number.followers.country <- sum(dt.aux$Followers)
-    
-    number.followers.authentic.eng <- sum(dt.aux$`Authentic engagement`)
-    
-    number.followers.average.eng <- sum(dt.aux$`Engagement avg`)
-      
-    dt.descriptive.statistics <- data.table(Statistic = character(),
-                                            Value = numeric())
-
-    dt.descriptive.statistics <- rbind(dt.descriptive.statistics,
-                                       list("Number of Top Influencers", nrow(dt.aux)),
-                                       list("Number of Followers", number.followers.country),
-                                       list("Authentic Engagement", number.followers.authentic.eng),
-                                       list("Average Engagement", number.followers.average.eng)
-                                  )
-    dt.descriptive.statistics
-   
   })
   
-  output$general.text <- renderText({
+  output$influencers.metrics <- renderDataTable({
     
-    "This tab provides an overview on the number of followers, influencer categories, the authentic engagement and engagement average for each audience country in our dataset by using the button on the side."
+    subset1 <- subset(dt.influencers, select = c("Account", "Title", "Category","Followers","Authentic engagement", "rank"))
     
+    subset1
+    
+  })
+  
+  output$wordcloud.metrics <- renderWordcloud2({            #Making a word cloud for the categories in each country
+    country.cat <- input$country.cat
+    dt.aux2 <- dt.influencers.new[Audience_country == country.cat, ]
+    category.frequency <- as.data.frame(table(dt.aux2$Category))
+    
+    wordcloud2(category.frequency, size = 1, color = "random-light", backgroundColor = "#f0f0f0")
+    
+  })
+  
+  output$categories.metrics <- renderDataTable({
+    
+    country.cat <- input$country.cat
+    dt.aux1 <- dt.influencers.new[Audience_country ==  country.cat, ]
+    
+    #Getting the number of mentions of each category in the dataframe
+    category.freq <- as.data.frame(table(dt.aux1$Category))
+    category.freq <- rename(category.freq, Category = Var1, Frequency = Freq)
+    #Getting the mean authentic engagement for each category
+    mean.engage <- dt.aux1[, .(mean_engagement = mean(Authentic_engagement)), by = Category]
+    
+    mean.engage <- mean.engage[order(Category)]  #Ordering the dataframe alphabetically to match the previously created table
+    
+    merged.cat <- merge(category.freq, mean.engage, by ="Category")  #Merging the all the two tables
+    
+    #Getting the minimum authentic engagement for each category
+    min.engage <- dt.influencers.new[, .(min_engagement = min(Authentic_engagement)), by = Category]
+    
+    merged.cat <- merge(merged.cat, min.engage, by ="Category")  #Merging the two tables
+    
+    #Getting the maximum authentic engagement for each category
+    max.engage <- dt.influencers.new[, .(max_engagement = max(Authentic_engagement)), by = Category]
+    
+    merged.cat <- merge(merged.cat, max.engage, by ="Category")  #Merging the two tables
+    
+    #Getting the standard deviation for the authentic engagement for each category
+    stdv.engage <- aggregate(dt.influencers.new$Authentic_engagement, by = list(Category = dt.influencers.new$Category), FUN = sd)
+    stdv.engage <- rename(stdv.engage, Category = Category, Stdv_Engagement = x)
+    stdv.engage$Stdv_Engagement <- ifelse(is.na(stdv.engage$Stdv_Engagement), 0, stdv.engage$Stdv_Engagement)
+    
+    merged.cat <- merge(merged.cat, stdv.engage, by ="Category")  #Merging the two tables
+    merged.cat
   })
   
   output$network.statistics <- renderTable({

@@ -1,15 +1,13 @@
-# Loading CSV file
-
-# Load data from csv file 
-
-load("influencers.RData")
-
 library(data.table)
 library(igraph)
 library(ggplot2)
 library(shiny)
 library(dplyr)
+library(RColorBrewer)
+library(wordcloud2)
 
+
+load("influencers.RData")
 # split the category column by "|"
 dt.influencers$Category <- strsplit(as.character(dt.influencers$Category), "\\|")
 # create a new dataframe with categories as separate rows
@@ -24,3 +22,4 @@ dt.influencers.new <- data.table(Account = rep(dt.influencers$Account, sapply(dt
 
 dt.influencers <- dt.influencers %>% 
   mutate(rank = ntile(Followers, n = 5)) 
+
