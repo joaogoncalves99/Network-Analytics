@@ -6,13 +6,14 @@ library(shiny)
 # Define server
 server <- function(input, output) {
   
+  my_data <- data.frame("Student Name" = c("Julia Bak", "Row 2, Column 1", "Row 3, Column 1", "Row 4, Column 1", "Row 5, Column 1"), 
+                        "Student ID" = c("53781", "Row 2, Column 2", "Row 3, Column 2", "Row 4, Column 2", "Row 5, Column 2"))
   
-  my_data <- data.frame("Student Name" = c("Ines", "Joao", "Julia", "Maria", "Patricia"), 
-                        "Student ID" = c("54045", "", "53781", "54350", "53004"))
   output$my_table <- renderDataTable({
     datatable(my_data, rownames = FALSE, options = list(paging = FALSE, searching = FALSE, ordering = FALSE))
+  })
   
-    })
+
   
   output$general.statistics <- renderTable({
   
