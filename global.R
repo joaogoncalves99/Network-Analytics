@@ -1,7 +1,7 @@
 # Loading CSV file
 
 # Load data from csv file 
-#setwd("/Users/joaogoncalves/Documents/Universidade/Mestrado/2nd Semester/T3/Network Analytics/Assignments/Shiny App/Network-Analytics")
+
 load("influencers.RData")
 
 library(data.table)
@@ -24,4 +24,3 @@ dt.influencers.new <- data.table(Account = rep(dt.influencers$Account, sapply(dt
 
 dt.influencers <- dt.influencers %>% 
   mutate(rank = ntile(Followers, n = 5)) 
-

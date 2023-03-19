@@ -5,6 +5,120 @@ library(shiny)
 
 # Define server
 server <- function(input, output) {
+  
+  output$my_table <- renderTable({
+    
+    my_data <- data.frame("Student Name" = c("Inês", "João", "Julia", "Maria", "Patrícia"), 
+                          "Student ID" = c("54045", "51268", "53781", "54350", "53004"))
+    colnames(my_data) <- NULL
+    rownames(my_data) <- NULL
+    my_data
+    
+  })
+  
+  output$plot <- renderPlot({
+    
+    my_subset <- subset(dt.influencers, select = c("Title", "Category","Followers","Audience Country","Authentic engagement"))
+    my_subset$Followers <- my_subset$Followers/1000000
+    my_subset$Authentic_engagement <- my_subset$`Authentic engagement`/1000000
+    
+    
+    if(input$tops == "Top 50"){
+      my_subset <- my_subset[order(-dt.influencers$Followers), ][1:50,]
+    }else if(input$tops == "Top 100"){
+      my_subset <- my_subset[order(-dt.influencers$Followers), ][1:100,]
+    }else{
+      my_subset <- my_subset[order(-dt.influencers$Followers), ]
+    }
+    
+    my_subset$Category <- sapply(my_subset$Category, function(x) gsub("[c()]", "", x[1]))
+    
+    if (input$statistics == "Followers Distribution") {
+      g1 <- ggplot(my_subset, aes(x =my_subset$Followers, fill ="#FD1D91")) + 
+        geom_histogram(bins=input$bins)+
+        xlab("Number of Followers (M)")+ ylab("Frequency")+
+        ggtitle(input$statistics)+
+        theme(plot.title = element_text(size = 14, face = "bold"),
+              axis.text = element_text(size = 12),
+              axis.title = element_text(size = 12, face = "bold"))
+      plot(g1)
+    }
+    
+    
+    if (input$statistics == "Followers Distribution by Country") {
+      g1 <- ggplot(my_subset, aes(x = my_subset$Followers, y=my_subset$`Audience Country`,color ="#FD1D91" )) + 
+        geom_point()+
+        xlab("Influencers") + ylab("Audience Country") +
+        ggtitle(input$statistics) +
+        theme(plot.title = element_text(size = 14, face = "bold"),
+              axis.text = element_text(size = 12),
+              axis.title = element_text(size = 12, face = "bold"))
+      plot(g1)
+      
+    }
+    
+    
+    
+    if (input$statistics == "Followers Distribution by Category") {
+      g1 <- ggplot(my_subset, aes(x = my_subset$Followers, y=my_subset$Category, color ="#FD1D91" )) + 
+        geom_point()+
+        xlab("Influencers") + ylab("Category") +
+        ggtitle(input$statistics) +
+        theme(plot.title = element_text(size = 14, face = "bold"),
+              axis.text = element_text(size = 12),
+              axis.title = element_text(size = 12, face = "bold"))
+      plot(g1)
+    }
+    
+    if (input$statistics == "Engagement Distribution") {
+      g1 <- ggplot(my_subset, aes(x = my_subset$`Authentic engagement`,fill ="#FD1D91")) + 
+        geom_histogram(bins=input$bins)+
+        xlab("Engagement (M)")+ ylab("Frequency")+
+        ggtitle(input$statistics)+
+        theme(plot.title = element_text(size = 14, face = "bold"),
+              axis.text = element_text(size = 12),
+              axis.title = element_text(size = 12, face = "bold"))
+      plot(g1)
+    }
+    
+    
+    
+    if (input$statistics == "Engagement Distribution by Country") {
+      g1 <- ggplot(my_subset, aes(x = my_subset$`Authentic engagement`, y=my_subset$`Audience Country`,color ="#FD1D91")) + 
+        geom_point()+
+        xlab("Engagement") + ylab("Coutry") +
+        ggtitle(input$statistics) +
+        theme(plot.title = element_text(size = 14, face = "bold"),
+              axis.text = element_text(size = 12),
+              axis.title = element_text(size = 12, face = "bold"))
+      plot(g1)
+    }
+    
+    if (input$statistics == "Engagement Distribution by Category") {
+      g1 <- ggplot(my_subset, aes(x = my_subset$`Authentic engagement`, y=my_subset$Category,color ="#FD1D91")) + 
+        geom_point()+
+        xlab("Engagement") + ylab("Category") +
+        ggtitle(input$statistics) +
+        theme(plot.title = element_text(size = 14, face = "bold"),
+              axis.text = element_text(size = 12),
+              axis.title = element_text(size = 12, face = "bold"))
+      plot(g1)
+    }
+    
+    
+    if (input$statistics == "Country Engagement by Influencer Category") {
+      g1 <- ggplot(my_subset, aes(x = my_subset$`Audience Country`, y=my_subset$Category,color ="#FD1D91")) + 
+        geom_point()+
+        xlab("Country Engagement") + ylab("Category") +
+        ggtitle(input$statistics) +
+        theme(plot.title = element_text(size = 14, face = "bold"),
+              axis.text = element_text(size = 12),
+              axis.title = element_text(size = 12, face = "bold"))
+      plot(g1)
+    }
+    
+  })  
+  
 
   output$general.statistics <- renderTable({
   
